@@ -3460,6 +3460,7 @@ body.light-theme .edu-card::after {
                 <input type="hidden" name="_template" value="table">
                 <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_replyto" value="">
+                <input type="text" name="_honey" style="display:none">
                 <input type="text" name="name" placeholder="Your Name" required class="contact-input">
                 <input type="email" name="email" placeholder="your.email@example.com" required class="contact-input">
                 <textarea name="message" placeholder="Your message..." required class="contact-input"></textarea>
@@ -3789,8 +3790,11 @@ if (contactForm) {
   const formStatus = contactForm.querySelector("[data-form-status]");
   const submitBtn = contactForm.querySelector(".btn-submit");
   const recipientEmail = contactForm.dataset.recipientEmail || "mdkarthik008@gmail.com";
+  const defaultButtonText = submitBtn ? submitBtn.textContent : "Send Message";
 
-  contactForm.addEventListener("submit", function () {
+  contactForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
     const nameInput = contactForm.querySelector('input[name="name"]');
     const emailInput = contactForm.querySelector('input[name="email"]');
     const messageInput = contactForm.querySelector('textarea[name="message"]');
@@ -3799,8 +3803,6 @@ if (contactForm) {
 
     const senderName = nameInput ? nameInput.value.trim() : "";
     const senderEmail = emailInput ? emailInput.value.trim() : "";
-    const messageBody = messageInput ? messageInput.value.trim() : "";
-
     if (subjectInput) {
       subjectInput.value = senderName
         ? `Portfolio message from ${senderName}`
@@ -3817,11 +3819,49 @@ if (contactForm) {
     }
 
     if (formStatus) {
-      formStatus.textContent = "Opening mail submission...";
+      formStatus.textContent = "Sending your message...";
       formStatus.className = "form-status pending";
     }
-    if (messageInput) {
-      messageInput.value = `Name: ${senderName}\nEmail: ${senderEmail}\nTo: ${recipientEmail}\n\n${messageBody}`;
+
+    const requestBody = new FormData(contactForm);
+    const ajaxEndpoint = contactForm.action.replace("https://formsubmit.co/", "https://formsubmit.co/ajax/");
+
+    try {
+      const response = await fetch(ajaxEndpoint, {
+        method: "POST",
+        headers: {
+          Accept: "application/json"
+        },
+        body: requestBody
+      });
+
+      if (!response.ok) {
+        throw new Error("Request failed");
+      }
+
+      const result = await response.json();
+      if (result.success === "true" || result.success === true) {
+        contactForm.reset();
+        if (replyToInput) {
+          replyToInput.value = "";
+        }
+        if (formStatus) {
+          formStatus.textContent = `Mail has been sent to ${recipientEmail}.`;
+          formStatus.className = "form-status success";
+        }
+      } else {
+        throw new Error(result.message || "Submission failed");
+      }
+    } catch (error) {
+      if (formStatus) {
+        formStatus.textContent = "Unable to send right now. Please try again in a moment.";
+        formStatus.className = "form-status error";
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = defaultButtonText;
+      }
     }
   });
 }
