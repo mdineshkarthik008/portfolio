@@ -1137,6 +1137,20 @@ body.light-theme .hero {
 
 .skills-item.hidden { display: none; }
 
+.skills-item.skill-card-image {
+  grid-column: span 2;
+  padding: 0;
+  overflow: hidden;
+}
+
+.skills-item.skill-card-image img {
+  width: 100%;
+  height: 100%;
+  min-height: 84px;
+  object-fit: cover;
+  display: block;
+}
+
 .skills-symbol-group {
   display: inline-flex;
   align-items: center;
@@ -2994,11 +3008,11 @@ body.light-theme .edu-card::after {
             <li class="skills-item" data-category="languages" aria-label="Data Structures and Algorithms" title="Data Structures and Algorithms">
               <span class="skills-symbol"><ion-icon name="git-branch-outline" aria-hidden="true"></ion-icon></span>
             </li>
-            <li class="skills-item" data-category="web" aria-label="HTML and CSS" title="HTML and CSS">
-              <span class="skills-symbol-group">
-                <span class="skills-symbol"><img src="https://cdn.simpleicons.org/html5" alt="HTML"></span>
-                <span class="skills-symbol"><img src="https://cdn.simpleicons.org/css3" alt="CSS"></span>
-              </span>
+            <li class="skills-item" data-category="web" aria-label="HTML" title="HTML">
+              <span class="skills-symbol"><img src="https://cdn.simpleicons.org/html5" alt="HTML"></span>
+            </li>
+            <li class="skills-item skill-card-image" data-category="web" aria-label="CSS" title="CSS">
+              <img src="./assets/images/skills-css-card.png" alt="CSS skill card">
             </li>
             <li class="skills-item" data-category="web" aria-label="React.js and Node.js" title="React.js and Node.js">
               <span class="skills-symbol-group">
@@ -3458,7 +3472,6 @@ body.light-theme .edu-card::after {
               <form action="https://formsubmit.co/mdkarthik008@gmail.com" method="POST" class="contact-form" data-contact-form data-recipient-email="mdkarthik008@gmail.com">
                 <input type="hidden" name="_subject" value="New message from portfolio contact form">
                 <input type="hidden" name="_template" value="table">
-                <input type="hidden" name="_captcha" value="false">
                 <input type="hidden" name="_next" value="">
                 <input type="hidden" name="_replyto" value="">
                 <input type="text" name="_honey" style="display:none">
@@ -3899,4 +3912,3 @@ cards.forEach(card => {
 
 </body>
 </html>
-
